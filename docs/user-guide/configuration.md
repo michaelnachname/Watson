@@ -164,7 +164,7 @@ Similar to the `options.stop_on_start` option, but for the [`restart`](./command
 
 Globally configure how `time` should be formatted. All [python's `strftime` directives](http://strftime.org) are supported.
 
-#### `options.durations_as_decimal`
+#### `options.format_as_decimal`
 
 If `true` format durations as decimal number of hours, e.g. `1h 30m` becomes `1.50h`
 
