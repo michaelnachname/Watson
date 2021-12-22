@@ -164,6 +164,15 @@ Similar to the `options.stop_on_start` option, but for the [`restart`](./command
 
 Globally configure how `time` should be formatted. All [python's `strftime` directives](http://strftime.org) are supported.
 
+#### `options.durations_as_decimal`
+
+If `true` format durations as decimal number of hours, e.g. `1h 30m` becomes `1.50h`
+
+#### `options.decimal_precision`
+
+Default: `2`, defines with how many decimal places durations should be formatted. Only
+relevant if `options.durations_as_decimal` is true.
+
 #### `options.week_start` (default: `monday`)
 
 Globally configure which day corresponds to the start of a week. Allowable

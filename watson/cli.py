@@ -709,6 +709,7 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
                 report['timespan']['from']
             )),
             style('time', '{}'.format(format_timedelta(
+                watson,
                 datetime.timedelta(seconds=report['time'])
             )))
         ))
@@ -729,6 +730,7 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
         _print('{tab}{project} - {time}'.format(
             tab=tab,
             time=style('time', format_timedelta(
+                watson,
                 datetime.timedelta(seconds=project['time'])
             )),
             project=style('project', project['name'])
@@ -741,6 +743,7 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
             for tag in tags:
                 _print('\t[{tag} {time}]'.format(
                     time=style('time', '{:>11}'.format(format_timedelta(
+                        watson,
                         datetime.timedelta(seconds=tag['time'])
                     ))),
                     tag=style('tag', '{:<{}}'.format(
@@ -748,6 +751,17 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
                     )),
                 ))
         _print("")
+
+    # only show total time at the bottom for a project if it is not
+    # an aggregate report and there is greater than 1 project
+    if len(projects) > 1 and not aggregated:
+        _print('Total: {}'.format(
+            style('time', '{}'.format(format_timedelta(
+                watson,
+                datetime.timedelta(seconds=report['time'])
+            )))
+        ))
+
 
     # if this is a report invoked from `aggregate` return the lines; do not
     # show total time
@@ -1121,14 +1135,15 @@ def log(watson, current, reverse, from_, to, projects, tags, ignore_projects,
         _print(
             "{date} ({daily_total})".format(
                 date=style('date', "{:dddd DD MMMM YYYY}".format(day)),
-                daily_total=style('time', format_timedelta(daily_total))
+                daily_total=style('time', format_timedelta(
+                    watson, daily_total))
             )
         )
 
         _print("\n".join(
-            "\t{id}  {start} to {stop}  {delta:>11}  {project}{tags}".format(
-                delta=format_timedelta(frame.stop - frame.start),
-                project=style('project', '{:>{}}'.format(
+            u"\t{id}  {start} to {stop}  {delta:>11}  {project}{tags}".format(
+                delta=format_timedelta(watson, frame.stop - frame.start),
+                project=style('project', u'{:>{}}'.format(
                     frame.project, longest_project
                 )),
                 tags=(" "*2 if frame.tags else "") + style('tags', frame.tags),
@@ -1383,9 +1398,9 @@ def edit(watson, confirm_new_project, confirm_new_tag, id):
 
     watson.save()
     click.echo(
-        "Edited frame for project {project}{tags}, from {start} to {stop} "
-        "({delta})".format(
-            delta=format_timedelta(stop - start) if stop else '-',
+        u"Edited frame for project {project}{tags}, from {start} to {stop} "
+        u"({delta})".format(
+            delta=format_timedelta(watson, stop - start) if stop else '-',
             project=style('project', project),
             tags=(" " if tags else "") + style('tags', tags),
             start=style(
